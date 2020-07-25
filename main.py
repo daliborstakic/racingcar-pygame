@@ -24,22 +24,22 @@ FPS = 60
 
 class Car(ABC):
     @abstractmethod
-    def draw(self):
+    def move(self):
         pass
 
     @abstractmethod
-    def move(self):
+    def draw(self):
         pass
 
 
 class Enemy(Car):
     def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.moving_speed = 30
+        self.x = 800
+        self.y = random.choice([124, 234])
+        self.moving_speed = 5
 
     def draw(self):
-        pass
+        win.blit(ENEMY_IMG, (self.x, self.y))
 
     def move(self):
         self.x -= self.moving_speed
@@ -63,19 +63,32 @@ class Player(Car):
             self.y = 124
 
 
+def enemy_spawn(enemy):
+    if enemy.x == WIDTH // 2:
+        enemies.append(Enemy())
+
+    if enemy.x <= 0:
+        enemies.pop(0)
+
+
 def render():
     win.fill(WHITE)
     win.blit(BACKGROUND, (0, 0))
     player.draw()
+
+    for enemy in enemies:
+        enemy.draw()
+
     pygame.display.update()
 
 
 def main():
-    global player
+    global player, enemies
 
     run = True
 
     player = Player()
+    enemies = [Enemy()]
 
     while run:
         clock.tick(FPS)
@@ -85,6 +98,10 @@ def main():
                 pygame.quit()
 
             player.move()
+
+        for enemy in enemies:
+            enemy.move()
+            enemy_spawn(enemy)
 
         render()
 
