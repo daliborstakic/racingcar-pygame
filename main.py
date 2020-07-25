@@ -5,7 +5,14 @@ from abc import ABC, abstractmethod
 pygame.init()
 
 # Screen
-win = pygame.display.set_mode((700, 400))
+WIDTH = 700
+HEIGHT = 400
+win = pygame.display.set_mode((WIDTH, HEIGHT))
+
+# Images
+BACKGROUND = pygame.image.load("images/background.png")
+PLAYER_IMG = pygame.image.load("images/player.png")
+ENEMY_IMG = pygame.image.load("images/enemy.png")
 
 # Colors
 WHITE = (255, 255, 255)
@@ -40,23 +47,35 @@ class Enemy(Car):
 
 class Player(Car):
     def __init__(self):
-        self.x = 0
-        self.y = 0
+        self.x = 50
+        self.y = 124
 
     def draw(self):
-        pass
+        win.blit(PLAYER_IMG, (self.x, self.y))
 
     def move(self):
-        pass
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_DOWN]:
+            self.y = 234
+
+        elif keys[pygame.K_UP]:
+            self.y = 124
 
 
 def render():
     win.fill(WHITE)
+    win.blit(BACKGROUND, (0, 0))
+    player.draw()
     pygame.display.update()
 
 
 def main():
+    global player
+
     run = True
+
+    player = Player()
 
     while run:
         clock.tick(FPS)
@@ -64,6 +83,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+
+            player.move()
 
         render()
 
