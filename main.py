@@ -4,15 +4,17 @@ from abc import ABC, abstractmethod
 
 pygame.init()
 
-# Screen
-WIDTH = 700
-HEIGHT = 400
-win = pygame.display.set_mode((WIDTH, HEIGHT))
-
 # Images
 BACKGROUND = pygame.image.load("images/background.png")
 PLAYER_IMG = pygame.image.load("images/player.png")
 ENEMY_IMG = pygame.image.load("images/enemy.png")
+
+# Screen
+WIDTH = 700
+HEIGHT = 400
+win = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Racing car")
+pygame.display.set_icon(PLAYER_IMG)
 
 # Colors
 WHITE = (255, 255, 255)
@@ -67,8 +69,15 @@ def enemy_spawn(enemy):
     if enemy.x == WIDTH // 2:
         enemies.append(Enemy())
 
-    if enemy.x <= 0:
+    if enemy.x <= -ENEMY_IMG.get_width():
         enemies.pop(0)
+
+
+def has_collided(enemy):
+    if enemy.x <= player.x <= enemy.x + ENEMY_IMG.get_width() and player.y == enemy.y:
+        return True
+
+    return False
 
 
 def render():
@@ -81,6 +90,8 @@ def render():
 
     pygame.display.update()
 
+def display_message(subject):
+    pass
 
 def main():
     global player, enemies
@@ -102,6 +113,9 @@ def main():
         for enemy in enemies:
             enemy.move()
             enemy_spawn(enemy)
+
+            if has_collided(enemy):
+                run = False
 
         render()
 
